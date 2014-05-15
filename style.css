@@ -18,12 +18,10 @@ body {
   width: 50%;
   height: 450px;
   float: left;
+  border: 1px dashed #a8a8b1;
 }
 
-#you {
-  border: 1px dashed red;
+#easy, #hard {
+  text-align: right;
 }
 
-#robot {
-  border: 1px dashed green;
-}
