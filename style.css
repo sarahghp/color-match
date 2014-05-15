@@ -1,0 +1,13 @@
+.you, .robot {
+  width: 50%;
+  height: 500px;
+  float: left;
+}
+
+.you {
+  background-color: red;
+}
+
+.robot {
+  background-color: green;
+}
