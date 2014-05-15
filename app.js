@@ -2,6 +2,9 @@ console.log('rawr');
 
 var you = document.getElementById('you');
 var robot = document.getElementById('robot');
+var player = document.getElementById('player');
+var help = player.className;
+
 
 var width = robot.offsetWidth,
     height = robot.offsetHeight;
@@ -66,8 +69,30 @@ function roboCircle() {
   robot.innerHTML = roboCirc;
 };
 
+function hoverHelp() {
+    var x = event.clientX - marginX + 5,
+      y = event.clientY - marginY + 5,
+      hue = x%360,
+      lightness = lightnessRange(y, height);
+
+  var inner;
+    inner = '<circle cx="';
+    inner += x;
+    inner += '" cy="'; 
+    inner += y; 
+    inner += '" r="5" style="fill:hsla(';
+    inner += hue; 
+    inner += ', 100%,';  
+    inner += lightness; 
+    inner += '%, .7)"/>';
+
+  you.innerHTML = inner;
+}
+
 you.onmouseup = logCo;
 robot.onmouseup = logCo;
 
 you.onmousedown = drawCircle;
 robot.onmousedown = roboCircle;
+
+player.className === "help" && (you.onmousemove = hoverHelp);
