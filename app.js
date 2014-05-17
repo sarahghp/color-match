@@ -1,10 +1,15 @@
 console.log('rawr');
 
-var you = document.getElementById('you');
-var robot = document.getElementById('robot');
-var player = document.getElementById('player');
-var help = player.className;
+// DOM selection variables
 
+var you = document.getElementById('you'),
+    robot = document.getElementById('robot'),
+    youWrapper = document.getElementById('youWrapper'),
+    help = youWrapper.className,
+    playButton = document.getElementById('play'),
+    scoreBox = document.getElementById('score');
+
+// Computed DOM variables
 
 var width = robot.offsetWidth,
     height = robot.offsetHeight;
@@ -12,21 +17,34 @@ var width = robot.offsetWidth,
 var marginX = 10, // Equal to margin on body
     marginY = 60; // Equal to margin on body, plus score div height
 
+// General functions
+
 function logCo (event){
   console.log(event.clientX, event.clientY);
-};
+}
+
+function anyNum (min, max) {
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
+function randomX () {
+  return anyNum(0, width) - marginX;
+}
+
+function randomY () {
+  return anyNum(marginY, height) - marginY;
+}
 
 function lightnessRange (num, height, usefulMin, usefulMax) {
   var usefulMin = usefulMin || 20,
       usefulMax = usefulMax || 85,
       difference = usefulMax - usefulMin;
-
   return (num - marginY) / height * difference + usefulMin;
 }
 
 function drawCircle (event) {
-  var x = event.clientX - marginX,
-      y = event.clientY - marginY,
+  var x = window.event.clientX - marginX,
+      y = window.event.clientY - marginY,
       hue = x%360,
       lightness = lightnessRange(y, height);
 
@@ -42,17 +60,13 @@ function drawCircle (event) {
     inner += '%, 1)"/>';
 
   you.innerHTML = inner;
-};
 
-function anyNum (min, max) {
-  return Math.floor(Math.random() * (max - min) + min);
-};
+  game.youX = x;
+  game.youY = y;
+}
 
-
-function roboCircle() {
-  var x = anyNum(0, width) - marginX,
-      y = anyNum(50, 500) - marginY,
-      hue = x%360,
+function roboCircle(x, y) {
+  var hue = x%360,
       lightness = lightnessRange(y, height);
 
   var roboCirc;
@@ -67,13 +81,13 @@ function roboCircle() {
     roboCirc += '%, 1)"/>';
 
   robot.innerHTML = roboCirc;
-};
+}
 
 function hoverHelp() {
-    var x = event.clientX - marginX + 5,
-      y = event.clientY - marginY + 5,
-      hue = x%360,
-      lightness = lightnessRange(y, height);
+  var x = event.clientX - marginX + 5,
+    y = event.clientY - marginY + 5,
+    hue = x%360,
+    lightness = lightnessRange(y, height);
 
   var inner;
     inner = '<circle cx="';
@@ -89,10 +103,81 @@ function hoverHelp() {
   you.innerHTML = inner;
 }
 
-you.onmouseup = logCo;
+function showScore() {
+  var scoreDisplay = '<p>';
+    for (var i = 0; i < 10; i++) {
+      if (i < 5) {
+        scoreDisplay += '<span class="fa fa-circle fa-lg" id="span' + i + '"></span>';  
+      } else {
+        scoreDisplay += '<span class="fa fa-circle-o fa-lg" id="span' + i + '"></span>';
+      }      
+    };
+  scoreDisplay += '<span id="reset"><a href="#">« Reset</a></span></p>'
+  scoreBox.innerHTML = scoreDisplay;
+  game = new Game();
+}
+
+function beginGame() {
+  showScore();
+  document.getElementById('reset').onclick = resetScore;
+  roboCircle(game.robotX, game.robotY);
+  you.addEventListener('click', game.compareSelection);
+}
+
+function incrementScore() {
+  console.log('yay!');
+}
+
+function decrementScore() {
+  console.log('booooo')
+}
+
+function resetScore() {
+  game = new Game;
+  scoreDisplay();
+}
+
+
+// General logic & test logging
+
+// you.onmouseup = logCo;
 robot.onmouseup = logCo;
 
-you.onmousedown = drawCircle;
 robot.onmousedown = roboCircle;
 
-player.className === "help" && (you.onmousemove = hoverHelp);
+you.addEventListener('click', drawCircle);
+
+
+// Game object
+
+function Game () {
+
+  this.score = 5;
+  this.help = false;
+  this.youX = 0;
+  this.youY = 0;
+  this.robotX = randomX();
+  this.robotY = randomY();
+
+
+  this.compareSelection = function() {
+    (this.youX > this.robotX + 4 || this.youX < this.robotX - 4) || (this.youY > this.robotY + 4 || this.youY < this.robotY - 4) ?  decrementScore() : incrementScore();
+  };
+
+}
+
+
+// Gameplay logic
+
+var game = new Game();
+playButton.onclick = beginGame;
+
+
+// setTimeout()
+
+
+game.help && (you.onmousemove = hoverHelp);
+
+
+console.log(game);
+

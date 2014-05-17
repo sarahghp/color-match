@@ -35,3 +35,14 @@ a:hover, a:active {
 .help {
   cursor: help;
 }
+
+.fa {
+  padding: 0 14px;
+  color: hsla(339, 100%, 52%, .5);
+}
+
+#play, #reset {
+  display:inline-block;
+  position: absolute;
+  right: 10px;
+};
