@@ -94,7 +94,7 @@ function hoverHelp() {
     inner += x;
     inner += '" cy="'; 
     inner += y; 
-    inner += '" r="5" style="fill:hsla(';
+    inner += '" r="10" style="fill:hsla(';
     inner += hue; 
     inner += ', 100%,';  
     inner += lightness; 
@@ -126,13 +126,16 @@ function beginGame() {
 }
 
 function incrementScore() {
-  console.log('yay!', game.youX, game.robotX + 4);
+  console.log('yay!');
   game.score++;
+  (game.score > 3) && (you.removeEventListener('mousemove', hoverHelp));
 }
 
 function decrementScore() {
   console.log('booooo');
   game.score--;
+  (game.score < 3) && (game.help = true);
+  game.help && (you.addEventListener('mousemove', hoverHelp));
 }
 
 function resetScore() {
@@ -160,9 +163,6 @@ function Game () {
   this.buffer = 20;
 
   var that = this;
-
-
-
   this.compareSelection = function() {
     if ((that.youX > that.robotX + that.buffer) || (that.youX < that.robotX - that.buffer) || (that.youY > that.robotY + that.buffer) || (that.youY < that.robotY - that.buffer)) { 
       decrementScore();
@@ -170,7 +170,6 @@ function Game () {
       incrementScore();
     }
   };
-
 }
 
 
@@ -181,7 +180,7 @@ playButton.onclick = beginGame;
 
 
 
-game.help && (you.onmousemove = hoverHelp);
+
 
 
 console.log(game);
