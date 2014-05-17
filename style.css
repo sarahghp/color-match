@@ -32,6 +32,10 @@ a:hover, a:active {
   border: 1px dashed hsla(240, 5%, 68%, 1);
 }
 
+#you {
+  cursor: pointer;
+}
+
 .help {
   cursor: help;
 }

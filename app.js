@@ -121,15 +121,18 @@ function beginGame() {
   showScore();
   document.getElementById('reset').onclick = resetScore;
   roboCircle(game.robotX, game.robotY);
+  you.addEventListener('click', drawCircle);
   you.addEventListener('click', game.compareSelection);
 }
 
 function incrementScore() {
-  console.log('yay!');
+  console.log('yay!', game.youX, game.robotX + 4);
+  game.score++;
 }
 
 function decrementScore() {
-  console.log('booooo')
+  console.log('booooo');
+  game.score--;
 }
 
 function resetScore() {
@@ -140,15 +143,11 @@ function resetScore() {
 
 // General logic & test logging
 
-// you.onmouseup = logCo;
+you.onmouseup = logCo;
 robot.onmouseup = logCo;
 
-robot.onmousedown = roboCircle;
 
-you.addEventListener('click', drawCircle);
-
-
-// Game object
+// Game object constructor
 
 function Game () {
 
@@ -158,10 +157,18 @@ function Game () {
   this.youY = 0;
   this.robotX = randomX();
   this.robotY = randomY();
+  this.buffer = 20;
+
+  var that = this;
+
 
 
   this.compareSelection = function() {
-    (this.youX > this.robotX + 4 || this.youX < this.robotX - 4) || (this.youY > this.robotY + 4 || this.youY < this.robotY - 4) ?  decrementScore() : incrementScore();
+    if ((that.youX > that.robotX + that.buffer) || (that.youX < that.robotX - that.buffer) || (that.youY > that.robotY + that.buffer) || (that.youY < that.robotY - that.buffer)) { 
+      decrementScore();
+    } else { 
+      incrementScore();
+    }
   };
 
 }
@@ -172,8 +179,6 @@ function Game () {
 var game = new Game();
 playButton.onclick = beginGame;
 
-
-// setTimeout()
 
 
 game.help && (you.onmousemove = hoverHelp);
