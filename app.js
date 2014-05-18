@@ -1,5 +1,3 @@
-console.log('rawr');
-
 // DOM selection variables
 
 var you = document.getElementById('you'),
@@ -17,11 +15,13 @@ var width = robot.offsetWidth,
 var marginX = 10, // Equal to margin on body
     marginY = 60; // Equal to margin on body, plus score div height
 
-// General functions
+// Logging functions
 
 function logCo (event){
   console.log(event.clientX, event.clientY);
 }
+
+// Math functions
 
 function anyNum (min, max) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -34,6 +34,8 @@ function randomX () {
 function randomY () {
   return anyNum(marginY, height) - marginY;
 }
+
+// Drawing & helper functions
 
 function lightnessRange (num, height, usefulMin, usefulMax) {
   var usefulMin = usefulMin || 20,
@@ -83,6 +85,12 @@ function roboCircle(x, y) {
   robot.innerHTML = roboCirc;
 }
 
+function generateNewRoboCircle() {
+  game.robotX = randomX();
+  game.robotY = randomY();
+  roboCircle(game.robotX, game.robotY);
+}
+
 function hoverHelp() {
   var x = event.clientX - marginX + 5,
     y = event.clientY - marginY + 5,
@@ -103,6 +111,8 @@ function hoverHelp() {
   you.innerHTML = inner;
 }
 
+// Display functions
+
 function showScore() {
   var scoreDisplay = '<p><span id="message">Match!</span>';
     for (var i = 1; i < 11; i++) {
@@ -118,50 +128,6 @@ function showScore() {
   game = new Game();
 }
 
-function beginGame() {
-  showScore();
-  document.getElementById('reset').onclick = beginGame;
-  you.innerHTML = '';
-  roboCircle(game.robotX, game.robotY);
-  you.addEventListener('click', drawCircle);
-  you.addEventListener('click', game.compareSelection);
-}
-
-function incrementScore() {
-  game.score++;
-  updateScoreDisplay('increment');
-  if (game.score >= 10) {
-    message.innerHTML = 'You win! <a id="again">Play again?</a>';
-    document.getElementById('again').onclick = beginGame;
-  } else if (game.score > 7) {
-    message.innerHTML = 'Nice! <a id="harder">Make harder?</a>';
-  } else {
-    message.innerHTML = 'Nice!';
-  }
-  
-  (game.score > 3) && (you.removeEventListener('mousemove', hoverHelp));
-
-  console.log(game.score);
-}
-
-function decrementScore() {
-  updateScoreDisplay('decrement'); // Turns "lost" circle open, before game score is dropped.
-  game.score--;
-  if (game.score <= 0) {
-    message.innerHTML = 'You lost. :( <a id="again">Play again?</a>';
-    document.getElementById('again').onclick = beginGame;
-    you.removeEventListener('mousemove', hoverHelp);
-  } else if (game.score < 3) {
-    message.innerHTML = 'Missed again. <a id="easier">Make easier?</a>'
-    you.addEventListener('mousemove', hoverHelp);
-  } else {
-    message.innerHTML = 'You missed! Try again.';
-  }
-  
-
-  console.log(game.score);
-}
-
 function updateScoreDisplay(state) {
   var targetSpan = 'span' + game.score;
 
@@ -174,12 +140,6 @@ function updateScoreDisplay(state) {
   }
 
 }
-
-// Test logging
-
-// you.onmouseup = logCo;
-// robot.onmouseup = logCo;
-
 
 // Game object constructor
 
@@ -206,7 +166,61 @@ function Game () {
 }
 
 
-// Gameplay logic
+// Gameplay functions
+
+function beginGame() {
+  showScore();
+  document.getElementById('reset').onclick = beginGame;
+  you.innerHTML = '';
+  roboCircle(game.robotX, game.robotY);
+  you.addEventListener('click', drawCircle);
+  you.addEventListener('click', game.compareSelection);
+}
+
+function incrementScore() {
+  game.score++;
+  updateScoreDisplay('increment');
+  if (game.score >= 10) {
+    message.innerHTML = 'You win! <a id="again">Play again?</a>';
+    document.getElementById('again').onclick = beginGame;
+  } else if (game.score > 7) {
+    message.innerHTML = 'Nice! <a id="harder">Make harder?</a>';
+    document.getElementById('harder').onclick = makeHarder;
+  } else {
+    message.innerHTML = 'Nice!';
+  }
+  
+  generateNewRoboCircle();
+
+  (game.score > 3) && (you.removeEventListener('mousemove', hoverHelp));
+}
+
+function decrementScore() {
+  updateScoreDisplay('decrement'); // Turns "lost" circle open, before game score is dropped.
+  game.score--;
+  if (game.score <= 0) {
+    message.innerHTML = 'You lost. :( <a id="again">Play again?</a>';
+    document.getElementById('again').onclick = beginGame;
+    you.removeEventListener('mousemove', hoverHelp);
+  } else if (game.score < 3) {
+    message.innerHTML = 'Missed again. <a id="easier">Make easier?</a>';
+    document.getElementById('easier').onclick = makeEasier;
+    you.addEventListener('mousemove', hoverHelp);
+  } else {
+    message.innerHTML = 'You missed! Try again.';
+  }
+}
+
+function makeEasier() {
+  game.buffer += 7;
+}
+
+function makeHarder() {
+  game.buffer -= 7;
+}
+
+
+// Gameplay
 
 var game = new Game();
 playButton.onclick = beginGame;
