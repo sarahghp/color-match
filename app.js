@@ -5,7 +5,8 @@ var you = document.getElementById('you'),
     youWrapper = document.getElementById('youWrapper'),
     help = youWrapper.className,
     playButton = document.getElementById('play'),
-    scoreBox = document.getElementById('score');
+    scoreBox = document.getElementById('score'),
+    legend = document.getElementById('legend');
 
 // Computed DOM variables
 
@@ -91,6 +92,27 @@ function generateNewRoboCircle() {
   roboCircle(game.robotX, game.robotY);
 }
 
+function roboSquare(x, y) {
+  var hue = x%360,
+    lightness = lightnessRange(y, height);
+
+  var roboSq;
+    roboSq = '<rect x="0" y="0" width="100%" height="100%"'
+    roboSq += 'style ="fill:hsla(';
+    roboSq += hue;
+    roboSq += ', 100%, ';  
+    roboSq += lightness; 
+    roboSq += '%, 1)"/>';
+
+  robot.innerHTML = roboSq;
+}
+
+function generateNewRoboSquare() {
+  game.robotX = randomX();
+  game.robotY = randomY();
+  roboSquare(game.robotX, game.robotY);
+}
+
 function hoverHelp() {
   var x = event.clientX - marginX + 5,
     y = event.clientY - marginY + 5,
@@ -106,7 +128,7 @@ function hoverHelp() {
     inner += hue; 
     inner += ', 100%,';  
     inner += lightness; 
-    inner += '%, .7)"/>';
+    inner += '%, 1)"/>';
 
   you.innerHTML = inner;
 }
@@ -129,33 +151,62 @@ function showScore() {
 }
 
 function updateScoreDisplay(state) {
-  var targetSpan = 'span' + game.score;
-
-  console.log(targetSpan);
-  
+  var targetSpan = 'span' + game.score;  
   if (state === 'increment') {
     document.getElementById(targetSpan).className = 'fa fa-circle fa-lg';
   } else {
     document.getElementById(targetSpan).className = 'fa fa-circle-o fa-lg';
   }
+}
 
+function generateLegend() {
+  var x = 18 - marginX + 5, // initial cx will be half of dot width
+    y = 25,
+    hue = x%360,
+    lightness = 65;
+    stops = width/36; // each dot is 46px;
+
+  var legendDisplay = '';
+
+  for (var i=1; i < stops; i++){
+    legendDisplay += '<circle cx="';
+    legendDisplay += x;
+    legendDisplay += '" cy="'
+    legendDisplay += y;
+    legendDisplay += '" r="5" style="fill:hsla(';
+    legendDisplay += hue;
+    legendDisplay += ', 100%, '; 
+    legendDisplay += lightness;
+    legendDisplay += '%, 1)"/>'; 
+    
+    x += 36;
+    hue = x%360
+  }
+
+  legend.innerHTML = legendDisplay;
+
+}
+
+function regenerateLegend() {
+  width = robot.offsetWidth;
+  generateLegend();
 }
 
 // Game object constructor
 
 function Game () {
 
-  this.score = 5;
+  this.score = 8;
   this.youX = 0;
   this.youY = 0;
   this.robotX = randomX();
   this.robotY = randomY();
-  this.buffer = 20;
+  this.buffer = 40;
 
   var that = this;
   this.compareSelection = function() {
-    if ((that.youX > that.robotX + that.buffer) || 
-        (that.youX < that.robotX - that.buffer) || 
+    if ((that.youX%360 > that.robotX%360 + that.buffer) || 
+        (that.youX%360 < that.robotX%360 - that.buffer) || 
         (that.youY > that.robotY + that.buffer) || 
         (that.youY < that.robotY - that.buffer)) { 
       decrementScore();
@@ -172,7 +223,7 @@ function beginGame() {
   showScore();
   document.getElementById('reset').onclick = beginGame;
   you.innerHTML = '';
-  roboCircle(game.robotX, game.robotY);
+  roboSquare(game.robotX, game.robotY);
   you.addEventListener('click', drawCircle);
   you.addEventListener('click', game.compareSelection);
 }
@@ -190,7 +241,8 @@ function incrementScore() {
     message.innerHTML = 'Nice!';
   }
   
-  generateNewRoboCircle();
+  // generateNewRoboCircle();
+  setTimeout(generateNewRoboSquare, 2000);
 
   (game.score > 3) && (you.removeEventListener('mousemove', hoverHelp));
 }
@@ -212,11 +264,13 @@ function decrementScore() {
 }
 
 function makeEasier() {
-  game.buffer += 7;
+  game.buffer += 10;
+  legend.style.visibility = "visible";
 }
 
 function makeHarder() {
-  game.buffer -= 7;
+  game.buffer -= 10;
+  legend.style.visibility = "hidden";
 }
 
 
@@ -224,4 +278,5 @@ function makeHarder() {
 
 var game = new Game();
 playButton.onclick = beginGame;
-
+generateLegend();
+window.onresize = regenerateLegend;
