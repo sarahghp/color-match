@@ -104,7 +104,7 @@ function hoverHelp() {
 }
 
 function showScore() {
-  var scoreDisplay = '<p>';
+  var scoreDisplay = '<p><span id="message">Match!</span>';
     for (var i = 0; i < 10; i++) {
       if (i < 5) {
         scoreDisplay += '<span class="fa fa-circle fa-lg" id="span' + i + '"></span>';  
@@ -114,40 +114,59 @@ function showScore() {
     };
   scoreDisplay += '<span id="reset"><a href="#">« Reset</a></span></p>'
   scoreBox.innerHTML = scoreDisplay;
+  message = document.getElementById('message');
   game = new Game();
 }
 
 function beginGame() {
   showScore();
-  document.getElementById('reset').onclick = resetScore;
+  document.getElementById('reset').onclick = beginGame;
+  you.innerHTML = '';
   roboCircle(game.robotX, game.robotY);
   you.addEventListener('click', drawCircle);
   you.addEventListener('click', game.compareSelection);
 }
 
 function incrementScore() {
-  console.log('yay!');
   game.score++;
+  if (game.score >= 10) {
+    message.innerHTML = 'You win! <a id="again">Play again?</a>';
+    document.getElementById('again').onclick = beginGame;
+  } else if (game.score > 7) {
+    message.innerHTML = 'Nice! <a id="harder">Make harder?</a>';
+  } else {
+    message.innerHTML = 'Nice!';
+  }
+  
   (game.score > 3) && (you.removeEventListener('mousemove', hoverHelp));
+
+  console.log(game.score);
 }
 
 function decrementScore() {
-  console.log('booooo');
   game.score--;
-  (game.score < 3) && (game.help = true);
-  game.help && (you.addEventListener('mousemove', hoverHelp));
+
+  if (game.score <= 0) {
+    message.innerHTML = 'You lost. :( <a id="again">Play again?</a>';
+    document.getElementById('again').onclick = beginGame;
+    you.removeEventListener('mousemove', hoverHelp);
+  } else if (game.score < 3) {
+    message.innerHTML = 'Missed again. <a id="easier">Make easier?</a>'
+    you.addEventListener('mousemove', hoverHelp);
+  } else {
+    message.innerHTML = 'You missed! Try again.';
+  }
+  
+
+  console.log(game.score);
 }
 
-function resetScore() {
-  game = new Game;
-  scoreDisplay();
-}
 
 
-// General logic & test logging
+// Test logging
 
-you.onmouseup = logCo;
-robot.onmouseup = logCo;
+// you.onmouseup = logCo;
+// robot.onmouseup = logCo;
 
 
 // Game object constructor
@@ -155,7 +174,6 @@ robot.onmouseup = logCo;
 function Game () {
 
   this.score = 5;
-  this.help = false;
   this.youX = 0;
   this.youY = 0;
   this.robotX = randomX();
@@ -164,7 +182,10 @@ function Game () {
 
   var that = this;
   this.compareSelection = function() {
-    if ((that.youX > that.robotX + that.buffer) || (that.youX < that.robotX - that.buffer) || (that.youY > that.robotY + that.buffer) || (that.youY < that.robotY - that.buffer)) { 
+    if ((that.youX > that.robotX + that.buffer) || 
+        (that.youX < that.robotX - that.buffer) || 
+        (that.youY > that.robotY + that.buffer) || 
+        (that.youY < that.robotY - that.buffer)) { 
       decrementScore();
     } else { 
       incrementScore();

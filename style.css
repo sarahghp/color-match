@@ -37,8 +37,11 @@ a:hover, a:active {
 }
 
 .fa {
-  padding: 0 14px;
   color: hsla(339, 100%, 52%, .5);
+}
+
+#message, .fa {
+  padding: 0 14px;
 }
 
 #play, #reset {
@@ -46,3 +49,7 @@ a:hover, a:active {
   position: absolute;
   right: 10px;
 };
+
+#harder, #easier {
+  cursor: pointer;
+}
