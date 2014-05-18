@@ -18,34 +18,34 @@ var marginX = 10, // Equal to margin on body
 
 // Logging functions
 
-function logCo (event){
+function logCo(event){
   console.log(event.clientX, event.clientY);
 }
 
 // Math functions
 
-function anyNum (min, max) {
+function anyNum(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-function randomX () {
+function randomX() {
   return anyNum(0, width) - marginX;
 }
 
-function randomY () {
+function randomY() {
   return anyNum(marginY, height) - marginY;
 }
 
 // Drawing & helper functions
 
-function lightnessRange (num, height, usefulMin, usefulMax) {
+function lightnessRange(num, height, usefulMin, usefulMax) {
   var usefulMin = usefulMin || 20,
       usefulMax = usefulMax || 85,
       difference = usefulMax - usefulMin;
   return (num - marginY) / height * difference + usefulMin;
 }
 
-function drawCircle (event) {
+function drawCircle(event) {
   var x = window.event.clientX - marginX,
       y = window.event.clientY - marginY,
       hue = x%360,
@@ -184,7 +184,6 @@ function generateLegend() {
   }
 
   legend.innerHTML = legendDisplay;
-
 }
 
 function regenerateLegend() {
@@ -194,7 +193,7 @@ function regenerateLegend() {
 
 // Game object constructor
 
-function Game () {
+function Game() {
 
   this.score = 8;
   this.youX = 0;
@@ -274,7 +273,7 @@ function makeHarder() {
 }
 
 
-// Gameplay
+// Onload
 
 var game = new Game();
 playButton.onclick = beginGame;
