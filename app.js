@@ -105,8 +105,8 @@ function hoverHelp() {
 
 function showScore() {
   var scoreDisplay = '<p><span id="message">Match!</span>';
-    for (var i = 0; i < 10; i++) {
-      if (i < 5) {
+    for (var i = 1; i < 11; i++) {
+      if (i < 6) {
         scoreDisplay += '<span class="fa fa-circle fa-lg" id="span' + i + '"></span>';  
       } else {
         scoreDisplay += '<span class="fa fa-circle-o fa-lg" id="span' + i + '"></span>';
@@ -129,6 +129,7 @@ function beginGame() {
 
 function incrementScore() {
   game.score++;
+  updateScoreDisplay('increment');
   if (game.score >= 10) {
     message.innerHTML = 'You win! <a id="again">Play again?</a>';
     document.getElementById('again').onclick = beginGame;
@@ -144,8 +145,8 @@ function incrementScore() {
 }
 
 function decrementScore() {
+  updateScoreDisplay('decrement'); // Turns "lost" circle open, before game score is dropped.
   game.score--;
-
   if (game.score <= 0) {
     message.innerHTML = 'You lost. :( <a id="again">Play again?</a>';
     document.getElementById('again').onclick = beginGame;
@@ -161,7 +162,18 @@ function decrementScore() {
   console.log(game.score);
 }
 
+function updateScoreDisplay(state) {
+  var targetSpan = 'span' + game.score;
 
+  console.log(targetSpan);
+  
+  if (state === 'increment') {
+    document.getElementById(targetSpan).className = 'fa fa-circle fa-lg';
+  } else {
+    document.getElementById(targetSpan).className = 'fa fa-circle-o fa-lg';
+  }
+
+}
 
 // Test logging
 
@@ -198,11 +210,4 @@ function Game () {
 
 var game = new Game();
 playButton.onclick = beginGame;
-
-
-
-
-
-
-console.log(game);
 
