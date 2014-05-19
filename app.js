@@ -285,11 +285,6 @@ function decrementScore() {
   } else {
     message.innerHTML = 'You missed! Try again.';
   }
-    if (mode === 'color') {
-    setTimeout(generateNewRoboSquare, 1500);
-  } else if (mode === 'circle'){
-    setTimeout(generateNewRoboCircle, 1500);
-  }
 }
 
 function makeEasier() {
