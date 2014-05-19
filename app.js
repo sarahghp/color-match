@@ -195,7 +195,7 @@ function regenerateLegend() {
 
 function Game() {
 
-  this.score = 8;
+  this.score = 5;
   this.youX = 0;
   this.youY = 0;
   this.robotX = randomX();
@@ -231,10 +231,10 @@ function incrementScore() {
   game.score++;
   updateScoreDisplay('increment');
   if (game.score >= 10) {
-    message.innerHTML = 'You win! <a id="again">Play again?</a>';
+    message.innerHTML = 'You win! <a a href="#" id="again">Play again?</a>';
     document.getElementById('again').onclick = beginGame;
   } else if (game.score > 7) {
-    message.innerHTML = 'Nice! <a id="harder">Make harder?</a>';
+    message.innerHTML = 'Nice! <a a href="#" id="harder">Make harder?</a>';
     document.getElementById('harder').onclick = makeHarder;
   } else {
     message.innerHTML = 'Nice!';
@@ -250,11 +250,11 @@ function decrementScore() {
   updateScoreDisplay('decrement'); // Turns "lost" circle open, before game score is dropped.
   game.score--;
   if (game.score <= 0) {
-    message.innerHTML = 'You lost. :( <a id="again">Play again?</a>';
+    message.innerHTML = 'You lost. :( <a a href="#" id="again">Play again?</a>';
     document.getElementById('again').onclick = beginGame;
     you.removeEventListener('mousemove', hoverHelp);
   } else if (game.score < 3) {
-    message.innerHTML = 'Missed again. <a id="easier">Make easier?</a>';
+    message.innerHTML = 'Missed again. <a a href="#" id="easier">Make easier?</a>';
     document.getElementById('easier').onclick = makeEasier;
     you.addEventListener('mousemove', hoverHelp);
   } else {

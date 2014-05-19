@@ -20,14 +20,20 @@ a:hover, a:active {
   color: hsla(339, 100%, 52%, 1);
 }
 
-#score, #legend {
+#score {
   width: 100%;
 }
 
 #legendWrapper {
   clear: both;
-    height: 50px;
+  height: 50px;
 }
+
+#legend, #mode {
+  width: 50%;
+  float: left;
+}
+
 
 #youWrapper, #robotWrapper {
   width: 50%;
@@ -51,11 +57,16 @@ a:hover, a:active {
   padding: 0 14px;
 }
 
-#play, #reset {
+#play, #reset, #mode {
   display:inline-block;
   position: absolute;
   right: 10px;
+  text-align: right;
 };
+
+#mode {
+  padding-top: 18px;
+}
 
 #harder, #easier {
   cursor: pointer;
