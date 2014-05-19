@@ -45,14 +45,6 @@ a:hover, a:active {
   border: 1px dashed hsla(240, 5%, 68%, 1);
 }
 
-.help {
-  cursor: help;
-}
-
-.fa {
-  color: hsla(339, 100%, 52%, .5);
-}
-
 #message, .fa {
   padding: 0 14px;
 }
@@ -62,12 +54,16 @@ a:hover, a:active {
   position: absolute;
   right: 10px;
   text-align: right;
-};
-
-#mode {
-  padding-top: 18px;
 }
 
-#harder, #easier {
-  cursor: pointer;
+.fa {
+  color: hsla(339, 100%, 52%, .5);
+}
+
+.selected-mode {
+  color: hsla(339, 100%, 52%, 1);
+}
+
+.selected-mode:hover {
+  text-decoration: none;
 }

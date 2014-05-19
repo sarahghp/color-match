@@ -6,7 +6,9 @@ var you = document.getElementById('you'),
     help = youWrapper.className,
     playButton = document.getElementById('play'),
     scoreBox = document.getElementById('score'),
-    legend = document.getElementById('legend');
+    legend = document.getElementById('legend'),
+    color = document.getElementById('color'),
+    circle = document.getElementById('circle');
 
 // Computed DOM variables
 
@@ -191,6 +193,20 @@ function regenerateLegend() {
   generateLegend();
 }
 
+function toggleMode() {
+  if (mode === 'color') {
+    color.className = '';
+    circle.className = 'selected-mode';
+    mode = 'circle';
+  } else if (mode === 'circle') {
+    circle.className = '';
+    color.className = 'selected-mode';
+    mode = 'color';
+  } else {
+    console.log('That is not a valid mode. Be sure mode is being set and passed correctly.')
+  }
+}
+
 // Game object constructor
 
 function Game() {
@@ -222,7 +238,13 @@ function beginGame() {
   showScore();
   document.getElementById('reset').onclick = beginGame;
   you.innerHTML = '';
-  roboSquare(game.robotX, game.robotY);
+  
+  if (mode === 'color') {
+    roboSquare(game.robotX, game.robotY);;
+  } else if (mode === 'circle'){
+    roboCircle(game.robotX, game.robotY);;
+  }
+
   you.addEventListener('click', drawCircle);
   you.addEventListener('click', game.compareSelection);
 }
@@ -240,9 +262,12 @@ function incrementScore() {
     message.innerHTML = 'Nice!';
   }
   
-  // generateNewRoboCircle();
-  setTimeout(generateNewRoboSquare, 2000);
-
+  if (mode === 'color') {
+    setTimeout(generateNewRoboSquare, 1500);
+  } else if (mode === 'circle'){
+    setTimeout(generateNewRoboCircle, 1500);
+  }
+  
   (game.score > 3) && (you.removeEventListener('mousemove', hoverHelp));
 }
 
@@ -260,6 +285,11 @@ function decrementScore() {
   } else {
     message.innerHTML = 'You missed! Try again.';
   }
+    if (mode === 'color') {
+    setTimeout(generateNewRoboSquare, 1500);
+  } else if (mode === 'circle'){
+    setTimeout(generateNewRoboCircle, 1500);
+  }
 }
 
 function makeEasier() {
@@ -276,6 +306,11 @@ function makeHarder() {
 // Onload
 
 var game = new Game();
+var mode = 'color';
+
 playButton.onclick = beginGame;
+color.onclick = toggleMode;
+circle.onclick = toggleMode;
+
 generateLegend();
 window.onresize = regenerateLegend;
