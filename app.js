@@ -243,6 +243,7 @@ function Game() {
 function beginGame() {
   showScore();
   document.getElementById('reset').onclick = beginGame;
+  end.style.display = "none";
   you.innerHTML = '';
   
   if (mode === 'color') {
