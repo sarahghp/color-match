@@ -8,7 +8,8 @@ var you = document.getElementById('you'),
     scoreBox = document.getElementById('score'),
     legend = document.getElementById('legend'),
     color = document.getElementById('color'),
-    circle = document.getElementById('circle');
+    circle = document.getElementById('circle'),
+    end = document.getElementById('end');
 
 // Computed DOM variables
 
@@ -89,9 +90,11 @@ function roboCircle(x, y) {
 }
 
 function generateNewRoboCircle() {
-  game.robotX = randomX();
-  game.robotY = randomY();
-  roboCircle(game.robotX, game.robotY);
+  if (game.over === false) {
+    game.robotX = randomX();
+    game.robotY = randomY();
+    roboCircle(game.robotX, game.robotY);
+  }
 }
 
 function roboSquare(x, y) {
@@ -110,9 +113,11 @@ function roboSquare(x, y) {
 }
 
 function generateNewRoboSquare() {
-  game.robotX = randomX();
-  game.robotY = randomY();
-  roboSquare(game.robotX, game.robotY);
+  if (game.over === false) {
+    game.robotX = randomX();
+    game.robotY = randomY();
+    roboSquare(game.robotX, game.robotY); 
+  }
 }
 
 function hoverHelp() {
@@ -166,7 +171,7 @@ function generateLegend() {
     y = 25,
     hue = x%360,
     lightness = 65;
-    stops = width/36; // each dot is 46px;
+    stops = width/36; // each dot, plus spacing is 36px;
 
   var legendDisplay = '';
 
@@ -217,6 +222,7 @@ function Game() {
   this.robotX = randomX();
   this.robotY = randomY();
   this.buffer = 40;
+  this.over = false;
 
   var that = this;
   this.compareSelection = function() {
@@ -241,30 +247,45 @@ function beginGame() {
   
   if (mode === 'color') {
     roboSquare(game.robotX, game.robotY);;
-  } else if (mode === 'circle'){
+  } else if (mode === 'circle') {
     roboCircle(game.robotX, game.robotY);;
   }
 
   you.addEventListener('click', drawCircle);
   you.addEventListener('click', game.compareSelection);
+  
+  you.style.pointerEvents = "all";
+  game.over = false;
+}
+
+function endGame() {
+  game.over = true;
+  message.innerHTML = '';
+  scoreBox.innerHTML = '';
+  you.innerHTML = '';
+  robot.innerHTML = '';
+  you.style.pointerEvents = "none";
 }
 
 function incrementScore() {
   game.score++;
   updateScoreDisplay('increment');
+  
   if (game.score >= 10) {
-    message.innerHTML = 'You win! <a a href="#" id="again">Play again?</a>';
+    endGame();
+    end.style.display = "block";
+    end.innerHTML = '<span>You win! <a href="#" id="again">Play again?</a></span>';
     document.getElementById('again').onclick = beginGame;
   } else if (game.score > 7) {
-    message.innerHTML = 'Nice! <a a href="#" id="harder">Make harder?</a>';
+    message.innerHTML = 'Nice! <a href="#" id="harder">Make harder?</a>';
     document.getElementById('harder').onclick = makeHarder;
   } else {
     message.innerHTML = 'Nice!';
   }
   
-  if (mode === 'color') {
+  if (mode === 'color' && game.over === false) {
     setTimeout(generateNewRoboSquare, 1500);
-  } else if (mode === 'circle'){
+  } else if (mode === 'circle'  && game.over === false) {
     setTimeout(generateNewRoboCircle, 1500);
   }
   
@@ -275,7 +296,9 @@ function decrementScore() {
   updateScoreDisplay('decrement'); // Turns "lost" circle open, before game score is dropped.
   game.score--;
   if (game.score <= 0) {
-    message.innerHTML = 'You lost. :( <a a href="#" id="again">Play again?</a>';
+    endGame();
+    end.style.display = "block";
+    end.innerHTML = '<span>You lost. :( <a a href="#" id="again">Play again?</a></span>';
     document.getElementById('again').onclick = beginGame;
     you.removeEventListener('mousemove', hoverHelp);
   } else if (game.score < 3) {
