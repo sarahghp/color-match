@@ -42,6 +42,8 @@ a:hover, a:active {
 }
 
 #you, #robot {
+  width: 100%;
+  height: 100%;
   border: 1px dashed hsla(240, 5%, 68%, 1);
 }
 
